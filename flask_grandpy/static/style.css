@@ -1,0 +1,229 @@
+html, body {
+    height: 100%;
+    width: 100%;
+    font-size: 0.75rem;
+}
+
+body {
+    color: #fff !important;
+    background: center no-repeat url('./images/background.jpg');
+    background-size: cover;
+}
+
+header {
+    position: absolute; 
+    top: 0;
+    height: 13%; 
+    left: 0px;
+    right: 0px;
+    overflow: hidden;
+    background-color: rgb(30, 31, 39, 0.75);
+    backdrop-filter: blur(0.5px);
+}
+
+header .container {
+    height: 100%;
+}
+
+footer {
+    position: absolute; 
+    height: 10%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    background-color: rgb(30, 31, 39, 0.75);
+    backdrop-filter: blur(0.5px);
+}
+
+main {
+    position: absolute; 
+    top: 13%;
+    bottom: 10%;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    background-color: rgb(30, 31, 39, 0.75);
+    backdrop-filter: blur(0.5px);
+}
+
+#talk {
+    position: absolute;
+    width: 100%;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+    background-color: rgba(43, 51, 56, 0.35);
+    border-radius: 15px;
+    backdrop-filter: blur(2px);
+}
+
+#discussion {
+    position: relative; 
+    width: 100%;
+    height: 88%;
+    top: 1%;
+    left: 0px;
+    right: 0px; 
+    overflow: auto;
+}
+
+.card-grandpy {
+    background-color: #414246;
+    border-radius: 0 10px 10px 10px;
+}
+
+.card-user {
+    background-color: #007BFF;
+    border-radius: 10px 10px 0 10px;
+}
+
+#input_message {
+    position: absolute;
+    height: 7%;
+    bottom: 0;
+    left: 0px;
+    right: 0px;
+    overflow: hidden;
+}
+
+#form {
+    width: 100%;
+}
+
+#message {
+    border-radius: 8px 0 0 8px;
+}
+
+
+/* RESPONSIVE */
+h1 { font-size: 1.25rem !important; }
+
+@media (min-width: 300px) {
+    #logo {
+        width: 10%;
+        height: 10%;
+    }
+    .link_logo {
+        max-height: 5%;
+        max-width: 5%;
+    }
+    #github {
+        max-height: 5%;
+        max-width: 10%;
+    }
+    h1 {
+        font-size: 1.5rem !important;
+    }
+    footer {
+        font-size: 0.8rem;
+    }
+}
+@media (min-width: 400px) {
+    h1 {
+        font-size: 1.5rem !important;
+    }
+}
+@media (min-width: 576px) {
+    h1 {
+        font-size: 1.75rem !important;
+    }
+    #input_message {
+        width: 95%;
+    }
+}
+@media (min-width: 768px) {
+    h1 {
+        font-size: 2rem !important;
+    }
+    #logo {
+        width: 7%;
+        height: 7%;
+    }
+    .link_logo {
+        max-height: 3%;
+        max-width: 3%;
+    }
+    #github {
+        max-height: 3%;
+        max-width: 8%;
+    }
+    #talk {
+        font-size: 1.1rem !important;
+    }
+    footer {
+        font-size: 1rem !important;
+    }
+}
+@media (min-width: 992px) {
+    h1 {
+        font-size: 2.5rem !important;
+    }
+    #logo {
+        width: 6%;
+        height: 6%;
+    }
+    .link_logo {
+        max-height: 2.5%;
+        max-width: 2.5%;
+    }
+    #github {
+        max-height: 2.5%;
+        max-width: 7%;
+    }
+    #talk {
+        font-size: 1.2rem !important;
+    }
+}
+@media (min-width: 1200px) {
+    h1 {
+        font-size: 2.75rem !important;
+    }
+    header {
+        font-size: 1.1rem !important;
+    }
+    #talk {
+        font-size: 1.3rem !important;
+    }
+    footer {
+        font-size: 1.1rem !important;
+    }
+}
+
+.gmap {
+    width: 100%;
+    height: 350px;
+    background-color: grey;
+}
+
+/* Response load ... */
+@-webkit-keyframes opacity {
+	0% { opacity: 1; }
+	100% { opacity: 0; }
+}
+@-moz-keyframes opacity {
+	0% { opacity: 1; }
+	100% { opacity: 0; }
+}
+
+#loading span {
+	-webkit-animation-name: opacity;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-iteration-count: infinite;
+	
+	-moz-animation-name: opacity;
+	-moz-animation-duration: 1s;
+	-moz-animation-iteration-count: infinite;
+}
+
+#loading span:nth-child(2) {
+	-webkit-animation-delay: 100ms;
+	-moz-animation-delay: 100ms;
+}
+
+#loading span:nth-child(3) {
+	-webkit-animation-delay: 300ms;
+	-moz-animation-delay: 300ms;
+}

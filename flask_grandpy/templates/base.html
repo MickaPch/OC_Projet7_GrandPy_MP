@@ -1,0 +1,27 @@
+<!doctype html>
+<head>
+    <!-- Bootstrap responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>GrandPy Bot - {% block title %}{% endblock %}</title>
+    <link rel="shortcut icon"
+          href="{{ url_for('static', filename='images/logo_grandpy.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script type=text/javascript src="{{url_for('static', filename='jquery.min.js') }}"></script>
+    <script type=text/javascript src="{{url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+</head>
+
+<body class="content">
+    <header>
+        {% block header %}{% endblock %}
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+    <footer>
+        {% block footer %}{% endblock %}
+    </footer>
+</body>
+
+{% block script %}{% endblock  %}

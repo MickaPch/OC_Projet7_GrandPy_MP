@@ -29,7 +29,7 @@ def create_app(test_config=None):
     except OSError:
         pass
     
-    from . import grandpy
+    from flask_grandpy import grandpy
     app.register_blueprint(grandpy.bp)
     app.add_url_rule('/', endpoint='index')
     
