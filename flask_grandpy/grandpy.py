@@ -1,16 +1,8 @@
-import functools
-from string import digits
-
+"""GrandPy app"""
 from flask import (
     Blueprint,
-    flash,
-    g,
-    redirect,
     render_template,
     request,
-    session,
-    url_for,
-    Response,
     jsonify
 )
 
@@ -28,7 +20,6 @@ bp = Blueprint(
 def index():
     """Routing to main page"""
 
-
     return render_template('grandpy.html')
 
 @bp.route('/show_response', methods=('GET', 'POST'))
@@ -43,110 +34,69 @@ def show_response():
     if request.method == 'POST':
         message = request.form['message']
         error = None
-        grandpy_adresse = ''
-        grandpy_map = ''
-        wiki_name = ''
-        grandpy_suite = ''
-        positions = []
 
-        if message in [None, '']:
+        if message.strip() in [None, '']:
             error = "Parles un peu plus fort mon petit !"
-        
-        # Parsing
-        lieu = parse_string(message)
-        wiki_name = ""
-        wiki_adress = ""
+            data = {
+                'error': error
+            }
 
-        if lieu in [None, '']:
-            error = """Je suis désolé mon enfant, mais je n'ai pas bien compris ce que tu recherches.<br>
-Pourrais-tu être un peu plus précis ?"""
         else:
-            maps = Gmaps(lieu)
-            positions = []
+            # Parsing user message
+            search = parse_string(message)
 
-            if maps.nb_places > 1:
-                grandpy_adresse = "Alors, d'après mes souvenirs, plusieurs lieux correspondaient à ce lieu :<br><ul>"
-                for place in maps.locations:
-                    grandpy_adresse += "<li>{} : {}</li>".format(
-                        place['name'],
-                        place['address']
-                    )
-                    grandpy_map = "Les voici sur une carte :"
+            if search.strip() in [None, '']:
+                error = "Je suis désolé mon enfant, mais je n'ai pas bien compris" \
+                        " ce que tu recherches.<br>Pourrais-tu être un peu plus précis ?"
+                data = {
+                    'error': error
+                }
 
-                    wiki_name = search_wiki(name=place['name'])
-                    wiki_adress = search_wiki(adress=place['formatted_address'].split(',')[0].maketrans('', '', digits))
-
-
-
-                    # Marqueurs
-                    positions.append({
-                        'lat': lieu['geometry']['location']['lat'],
-                        'lng': lieu['geometry']['location']['lng'],
-                        'name': lieu['name'],
-                        'wiki_name': wiki_name,
-                        'wiki_adress': wiki_adress
-                    })
-                    # print(wiki_name)
-                grandpy_adresse += "</ul>"
-
-
-
-
-            elif maps.nb_places == 1:
-                grandpy_adresse = "Tu veux l'adresse de {} ?<br>Bien sûr ! La voici : {}".format(
-                    maps.name,
-                    maps.address
-                )
-                grandpy_map = "C'est ici :"
-
-                # Marqueur
-                wiki_name = Wiki(
-                    maps.name,
-                    maps.link
-                )
-                wiki_street = Wiki(maps.street)
-                wiki_ville = Wiki(maps.city)
-
-
-                wiki_title = "{} - {} :".format(
-                    maps.name,
-                    maps.address
-                )
-                wiki_text = wiki_name.description
-                address_desc = wiki_street.description.split('</dt>')[1]
-                ville_desc = wiki_ville.description.split('</dt>')[1]
-                if address_desc != ville_desc:
-                    wiki_text += wiki_street.description
-                wiki_text += wiki_ville.description
-
-                positions.append({
-                    'lat': maps.lat,
-                    'lng': maps.lng,
-                    'name': maps.name,
-                    # 'wiki_name': wiki_name.desc_text,
-                    'content': wiki_name.info_window
-                })
             else:
-                error = """Je pense que ma mémoire commence à me jouer des tours...<br>
-Je ne me souviens de rien à propos de {}""".format(lieu)
+                data = search_place(search, message)
+    else:
+        data = {'error': "Désolé, seule la méthode POST est gérée pour le traitement de l'information."}
 
+    return jsonify(data)
 
-        grandpy_suite = "Alors, content ? Veux-tu que je te parles d'un autre lieu ?"
+def search_place(search, message):
+    """
+    Search a place in Google Maps API.
+    If no places found, return error to show in HTML template.
+    Else, return maps and wiki informations about this places."""
+
+    error = None
+    maps = Gmaps(search)
+
+    if maps.nb_places == 0:
+        error = """Je pense que ma mémoire commence à me jouer des tours...<br>
+Je ne me souviens de rien à propos de {}""".format(search)
+        data = {
+            'error': error
+        }
+
+    else:
+        # 1 ou plusieurs résultats
+
+        # Wikimedia search by name, street and city
+        wiki = Wiki(maps)
+
+        locations = []
+        for location in maps.locations:
+            location['content'] = wiki.info_window[
+                location['name']
+            ]
+            locations.append(location)
 
         data = {
             'error': error,
             'message': message,
-            'grandpy_adresse': grandpy_adresse,
-            'grandpy_map': grandpy_map,
-            'wiki_title': wiki_title,
-            'grandpy_wiki': wiki_text,
-            'grandpy_suite': grandpy_suite,
-            'location': positions,
+            'grandpy_adresse': maps.messages['card_address'],
+            'grandpy_map': maps.messages['card_map'],
+            'wiki_title': maps.messages['card_wiki'],
+            'grandpy_wiki': wiki.wiki_text,
+            'location': locations,
             'link_js': MAPS_LINK
         }
-        # print(data)
-    
-    # import time
-    # time.sleep(3)
 
-    return jsonify(data)
+    return data

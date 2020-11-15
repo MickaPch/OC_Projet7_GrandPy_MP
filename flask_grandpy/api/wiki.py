@@ -1,37 +1,32 @@
-import requests
+"""WikiMedia requests"""
+from flask_grandpy.api.request import json_request
+
+
 
 
 class Wiki():
+    """
+    Search Wikipedia page on wikimedia API.
+    """
 
-    def __init__(self, search=None, link=None):
+    def __init__(self, map_object):
+        """Wiki object initialization"""
 
-        self._url = "https://fr.wikipedia.org/w/api.php"
+        self.url = "https://fr.wikipedia.org/w/api.php"
 
-        self.match = False
-        self.info_window = ""
-        if search != None:
-            try:
-                title = self.search_pages(search)
-                self.description = self.format_description(search, title)
-                self.match = True
-            except ValueError:
-                self._desc_text = 'Je ne me souviens de rien à propos de ce lieu...'
-                self.description = """
-                    <dt>{search}</dt>
-                    <dd>Je ne me souviens de rien à propos de {search}...</dd>
-                """.format(search=search)
-            if link != None:
-                self.info_window = self.format_info(
-                    search,
-                    link
-                )
+        # Wiki text for most relevant result
+        self.wiki_text = self.format_wiki(map_object)
 
-    def wiki_request(self, params):
+        # Info window for each marker
+        info_window = {}
+        for location in map_object.locations:
+            info_window[location['name']] = self.format_info(
+                location['name'],
+                location['link']
+            )
 
-        S = requests.Session()
-        R = S.get(url=self._url, params=params)
+        self.info_window = info_window
 
-        return R.json()
 
     def search_pages(self, search):
         """Search information get by Google Maps API in title of wiki page"""
@@ -43,8 +38,8 @@ class Wiki():
             "srsearch": search,
             "srlimit": "1"
         }
-        DATA = self.wiki_request(params)
-        result = DATA['query']['search']
+        data = json_request(self.url, params)
+        result = data['query']['search']
 
         if len(result) > 0:
             title = result[0]['title']
@@ -53,10 +48,11 @@ class Wiki():
 
         return title
 
-    def format_description(self, search, title):
+    def format_description(self, search):
         """Return HTML formatted string"""
 
-        self._desc_text = self.get_desc(title)
+        title = self.search_pages(search)
+        desc_text = self.get_desc(title)
 
         description = """
             <dt>{}</dt>
@@ -65,7 +61,7 @@ class Wiki():
             </dd>
         """.format(
             search,
-            self._desc_text,
+            desc_text,
             self.get_url(title)
         )
 
@@ -88,13 +84,10 @@ class Wiki():
             "format": "json"
         }
 
-        DATA = self.wiki_request(params)
-        result = DATA['query']['pages']
+        data = json_request(self.url, params)
+        result = data['query']['pages']
 
-        if len(result) > 0:
-            description = result[0]['extract'].split('==')[0]
-        else:
-            raise ValueError("Aucun résultat")
+        description = result[0]['extract'].split('==')[0]
 
         return description
 
@@ -113,33 +106,91 @@ class Wiki():
             "format": "json"
         }
 
-        DATA = self.wiki_request(params)
-        result = DATA['query']['pages']
+        data = json_request(self.url, params)
+        result = data['query']['pages']
 
-        if len(result) > 0:
-            url = result[0]['fullurl']
-        else:
-            raise ValueError("Aucun résultat")
+        url = result[0]['fullurl']
 
         return url
 
-    def format_info(self, search, link):
+    def format_info(self, name, link):
         """Return formatted info string to show in Maps window"""
 
+        try:
+            desc = self.get_desc(
+                self.search_pages(name)
+            )
+        except ValueError:
+            desc = """
+                Je ne me souviens de rien à propos de {search}...
+            """.format(search=name)
+
         info_window = """
-        <div id="content">
+        <div id="content" style="color: black;">
             <div id="siteNotice"></div>
             <h1 id="firstHeading" class="firstHeading">{title}</h1>
             <div id="bodyContent">
                 <p>{desc}</p>
-                <p><a href="{link}" target="_blank">Voir sur Google Maps</a></p>
+                <p>
+                    <a href="{link}"
+                       target="_blank"
+                    >
+                        Voir sur Google Maps
+                    </a>
+                </p>
             </div>
         </div>
         """.format(
-            title=search,
-            desc=self._desc_text,
+            title=name,
+            desc=desc,
             link=link
         )
 
-
         return info_window
+
+    def format_wiki(self, map_object):
+        """
+        Return wiki text formatted
+        if wiki adress description
+        is the same as wiki city description
+        """
+
+        wiki_description = {
+            'name': "",
+            'street': "",
+            'city': ""
+        }
+        for search in wiki_description:
+            if map_object.infos[search] != "":
+                try:
+                    wiki_description[search] = self.format_description(
+                        map_object.infos[search]
+                    )
+                except ValueError:
+                    wiki_description[search] = """
+                        <dt>{search}</dt>
+                        <dd>Je ne me souviens de rien à propos de {search}...</dd>
+                    """.format(search=map_object.infos[search])
+            else:
+                wiki_description[search] = ""
+
+        name_desc = wiki_description['name'].split('</dt>')[1]
+        try:
+            address_desc = wiki_description['street'].split('</dt>')[1]
+        except IndexError:
+            address_desc = ""
+        city_desc = wiki_description['city'].split('</dt>')[1]
+
+        description = wiki_description['name']
+
+        if address_desc not in (
+            "",
+            name_desc,
+            city_desc
+        ):
+            description += wiki_description['street']
+
+        if city_desc not in ("", name_desc):
+            description += wiki_description['city']
+
+        return description

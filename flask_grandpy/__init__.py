@@ -1,6 +1,9 @@
+"""Flask app"""
 import os
 
 from flask import Flask
+
+from flask_grandpy import grandpy
 
 
 def create_app(test_config=None):
@@ -22,15 +25,15 @@ def create_app(test_config=None):
     else:
         # Load the test config is passed in
         app.config.from_mapping(test_config)
-    
+
     # Ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
-    
-    from flask_grandpy import grandpy
+
+    # GrandPy page
     app.register_blueprint(grandpy.bp)
     app.add_url_rule('/', endpoint='index')
-    
+
     return app

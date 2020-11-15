@@ -1,93 +1,146 @@
-# Clé API : AIzaSyBD0DjPZQJNI-2XLgRE_TB5Y6-TJT88atg
-# Nom du projet : GrandPy-OC
-# ID projet Google Maps : alert-almanac-292209
-# N° du projet : 1027604431478
-
-import requests
+"""Google Maps requests"""
 from string import digits
+import requests
 
 from flask_grandpy.settings import API_KEY
+from flask_grandpy.api.request import json_request
 
 
-MAPS_LINK = "https://maps.googleapis.com/maps/api/js?key={}&libraries=localContext,places&callback=initMap".format(
-    API_KEY
-)
-
-# Créer CLASSE + Vérification nombre de résultats pour choix utilisateur
-class Gmaps():
-
-    def __init__(self, place):
-
-        self._url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json"
-        link_url = "https://www.google.com/maps/search/?api=1&query={}&query_place_id={}"
-
-        request = self.request_get(place)
-        self.nb_places = len(request['candidates'])
-
-        if self.nb_places > 0:
-                
-            # Relevant place:
-            self.name = request['candidates'][0]['name']
-            self.address = request['candidates'][0]['formatted_address']
-            self.street = self.address.split(',')[-3].translate(
-                str.maketrans('', '', digits)
-            ).strip()
-            self.city = self.address.split(',')[-2].translate(
-                str.maketrans('', '', digits)
-            ).strip()
-            self.lat = request['candidates'][0]['geometry']['location']['lat']
-            self.lng = request['candidates'][0]['geometry']['location']['lng']
-            self.link = link_url.format(
-                requests.utils.requote_uri(self.address),
-                request['candidates'][0]['place_id']
+# --> PYLINT : A MODIFIER !!!
+MAPS_LINK = "https://maps.googleapis.com/maps/api/js?" \
+            "key={}&libraries=localContext,places&callback=initMap".format(
+                API_KEY
             )
 
-            # All places, usefull if nb_places > 1
-            self.locations = []
-            for match_place in request['candidates']:
-                address = match_place['formatted_address']
-                street = address.split(',')[-3].translate(
-                    str.maketrans('', '', digits)
-                ).strip()
-                city = address.split(',')[-2].translate(
-                    str.maketrans('', '', digits)
-                ).strip()
-                link = link_url.format(
-                    requests.utils.requote_uri(address),
-                    match_place['place_id']
-                )
+class Gmaps():
+    """
+    Search of location by text.
+    Return nb of found places.
+    """
 
-                self.locations.append({
-                    'name': match_place['name'],
-                    'address': address,
-                    'street': street,
-                    'city': city,
-                    'link': link
-                })
 
-    def request_get(self, place):
+    def __init__(self, place):
+        """
+        Object search place init.
+        Return nb of found places.
+        """
+        self.url = "https://maps.googleapis.com/maps/api/place/textsearch/json"
+        self.link_url = "https://www.google.com/maps/search/?api=1&query={}&query_place_id={}"
 
+        # API REQUEST
+        request = self.get_request(place)
+
+        # NB of found places
+        self.nb_places = len(request['results'])
+
+        if self.nb_places > 0:
+
+            # Most relevant place if nb_places > 1
+            self.infos = self.get_infos(request)
+
+            # All results in list for Javascript Map
+            self.locations = self.get_locations(request)
+
+            str_address, str_wiki = self.cards_text()
+            if self.nb_places == 1:
+                self.messages = {
+                    'card_map': "C'est ici :",
+                    'card_address': str_address,
+                    'card_wiki': str_wiki
+                }
+            else:
+                self.messages = {
+                    'card_map': "Les voici sur une carte :",
+                    'card_address': str_address,
+                    'card_wiki': str_wiki
+                }
+
+    def get_request(self, place):
+        """Return Gmaps request JSON object"""
         params = {
-            "input": place,
-            "inputtype": "textquery",
-            "fields": "formatted_address,name,geometry,place_id",
-            # "fields": ["formatted_address", "name", "geometry", "place_id"],
+            "query": place,
             "key": API_KEY
         }
 
-        S = requests.Session()
-        R = S.get(url=self._url, params=params)
+        return json_request(self.url, params)
 
-        return R.json()
+    def get_infos(self, request):
+        """Return infos dict"""
 
+        name = request['results'][0]['name']
+        address = request['results'][0]['formatted_address']
+        try:
+            street = address.split(',')[-3].translate(
+                str.maketrans('', '', digits)
+            ).strip()
+        except IndexError:
+            street = ""
+        city = address.split(',')[-2].translate(
+            str.maketrans('', '', digits)
+        ).strip()
 
-def request_map_api(lieu):
-    # map_request_url = "https://maps.googleapis.com/maps/api/place/findplacefromtext/json?input={}&inputtype=textquery&fields=formatted_address,name,geometry,icon&key={}".format(
-    #     lieu,
-    #     API_KEY
-    # )
-    # map_request_url = requests.utils.requote_uri(map_request_url)
-    # resp = requests.get(map_request_url)
-    # map_api = resp.json()
+        # URL Google maps
 
-    return map_api
+        link = self.link_url.format(
+            requests.utils.requote_uri(address),
+            request['results'][0]['place_id']
+        )
+        return {
+            'name': name,
+            'address': address,
+            'street': street,
+            'city': city,
+            'link': link
+        }
+
+    def get_locations(self, request):
+        """Return list of locations informations"""
+        locations = []
+        for match_place in request['results'][:5]:
+
+            locations.append({
+                'lat': match_place['geometry']['location']['lat'],
+                'lng': match_place['geometry']['location']['lng'],
+                'name': match_place['name'],
+                'address': match_place['formatted_address'],
+                'link': self.link_url.format(
+                    requests.utils.requote_uri(
+                        match_place['formatted_address']
+                    ),
+                    match_place['place_id']
+                )
+            })
+
+        return locations
+
+    def cards_text(self):
+        """Return formatted string for adress and wiki cards"""
+
+        if self.nb_places == 1:
+            str_address = "Tu veux l'adresse de {} ?<br>Bien sûr ! La voici : {}".format(
+                self.infos['name'],
+                self.infos['address']
+            )
+            str_wiki = "{} - {} :".format(
+                self.infos['name'],
+                self.infos['address']
+            )
+        else:
+            # PLUSIEURS RESULTATS
+            list_content = str()
+            for location in self.locations:
+                list_content += "<li>{} : {}</li>".format(
+                    location['name'],
+                    location['address']
+                )
+            str_address = "Alors, d'après mes souvenirs, plusieurs endroits " \
+                        "correspondaient à ce lieu :<br><ul>{}</ul>".format(
+                            list_content
+                        )
+            str_wiki = "Plusieurs endroits correspondent à ce lieu." \
+                    " Voici celui que j'estime le plus pertinent :<br>{} - {}".format(
+                        self.infos['name'],
+                        self.infos['address']
+                    )
+
+        return str_address, str_wiki
