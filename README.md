@@ -17,6 +17,7 @@ Auteur : [MickaP](https://github.com/MickaPch/)
 * [Cahier des charges](#cahier_des_charges)
     * [Fonctionnalités](#fonctionnalites)
     * [Parcours utilisateur](#parcours_utilisateur)
+* [Initialisation](#initialisation)
 
 
 ## <a name="cahier_des_charges"></a>Cahier des charges
@@ -45,4 +46,36 @@ Puis un nouveau message apparaît : "Bien sûr mon poussin ! La voici : 7 cité 
 
 GrandPy envoie un nouveau message : "Mais t'ai-je déjà raconté l'histoire de ce quartier qui m'a vu en culottes courtes ? La cité Paradis est une voie publique située dans le 10e arrondissement de Paris. Elle est en forme de té, une branche débouche au 43 rue de Paradis, la deuxième au 57 rue d'Hauteville et la troisième en impasse.
 [[En savoir plus sur Wikipedia](https://fr.wikipedia.org/wiki/Cit%C3%A9_Paradis)]"
+
+
+### <a name="initialisation"></a>Initialisation en local
+
+
+Afin d'être testée localement, l'application GrandPy développée dans le cadre du projet n°7 du parcours OC requiert l'installation de Python (développée en version 3.8.0).
+> <a name="python_dl" href="https://www.python.org/downloads/" target="_blank">Télécharger Python</a>
+
+Le code source de l'application est disponible dans le repository GitHub <a name="P7_github" href="https://github.com/MickaPch/OC_Projet7_GrandPy_MP" target="_blank">OC_Projet7_GrandPy_MP</a>
+> Les rapports de tests ne sont pas versionnés dans Git. Voir le fichier <a name="readme_tests" href="./tests/README.md" target="_blank">README.md</a> relatifs aux tests.
+
+
+#### Procédure d'installation et de lancement de l'application en version développement :
+1. Télécharger ou cloner le repo GitHub
+2. Lancement de l'application (source <a name="P7_gflask_docithub" href="https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/" target="_blank">documentation Flask</a>):
+* Pour Linux et Mac:  
+`$ export FLASK_APP=flask_grandpy`  
+`$ export FLASK_ENV=development`  
+`$ flask run`
+
+* Pour l'interface de commandes Windows:  
+`> set FLASK_APP=flask_grandpy`  
+`> set FLASK_ENV=development`  
+`> flask run`
+
+* Pour Windows Powershell:  
+`> $env:FLASK_APP="flask_grandpy"`  
+`> $env:FLASK_ENV="development"`  
+`> flask run`  
+
+3. Accès à la page du site GrandPy via l'URL <a name="url_local_grandpy" href="http://127.0.0.1:5000" target="_blank">127.0.0.1:5000</a>
+
 
