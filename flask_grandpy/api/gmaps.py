@@ -2,14 +2,13 @@
 from string import digits
 import requests
 
-from flask_grandpy.settings import API_KEY
-from flask_grandpy.api.request import json_request
+from flask_grandpy.api.request import json_request, retrieve_api_key
 
 
-# --> PYLINT : A MODIFIER !!!
+google_map_key = retrieve_api_key('./config.yaml')
 MAPS_LINK = "https://maps.googleapis.com/maps/api/js?" \
             "key={}&libraries=localContext,places&callback=initMap".format(
-                API_KEY
+                google_map_key
             )
 
 class Gmaps():
@@ -59,7 +58,7 @@ class Gmaps():
         """Return Gmaps request JSON object"""
         params = {
             "query": place,
-            "key": API_KEY
+            "key": google_map_key
         }
 
         return json_request(self.url, params)
