@@ -3,7 +3,7 @@
 # ^^^ this
 import pytest
 
-from flask_grandpy import create_app
+from flaskgrandpy import create_app
 
 @pytest.fixture
 def app():

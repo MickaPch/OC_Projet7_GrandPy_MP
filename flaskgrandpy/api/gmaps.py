@@ -2,7 +2,7 @@
 from string import digits
 import requests
 
-from flask_grandpy.api.request import json_request, retrieve_api_key
+from flaskgrandpy.api.request import json_request, retrieve_api_key
 
 
 google_map_key = retrieve_api_key('./config.yaml')

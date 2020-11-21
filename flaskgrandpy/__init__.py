@@ -3,7 +3,7 @@ import os
 
 from flask import Flask
 
-from flask_grandpy import grandpy
+from flaskgrandpy import grandpy
 
 
 def create_app(test_config=None):

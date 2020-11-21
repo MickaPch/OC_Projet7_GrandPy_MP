@@ -1,5 +1,5 @@
 """Test STOPWORDS module"""
-from flask_grandpy.parser import stopwords
+from flaskgrandpy.parser import stopwords
 
 
 def test_stopwords():

@@ -1,5 +1,5 @@
 """Test Home page"""
-from flask_grandpy import create_app
+from flaskgrandpy import create_app
 
 
 def test_config():

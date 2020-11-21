@@ -1,5 +1,5 @@
 """Test REQUEST module"""
-from flask_grandpy.api import request
+from flaskgrandpy.api import request
 
 
 def test_request():

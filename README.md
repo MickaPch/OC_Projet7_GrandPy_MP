@@ -62,17 +62,17 @@ Le code source de l'application est disponible dans le repository GitHub <a name
 1. Télécharger ou cloner le repo GitHub
 2. Lancement de l'application (source <a name="P7_gflask_docithub" href="https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/" target="_blank">documentation Flask</a>):
 * Pour Linux et Mac:  
-`$ export FLASK_APP=flask_grandpy`  
+`$ export FLASK_APP=flaskgrandpy`  
 `$ export FLASK_ENV=development`  
 `$ flask run`
 
 * Pour l'interface de commandes Windows:  
-`> set FLASK_APP=flask_grandpy`  
+`> set FLASK_APP=flaskgrandpy`  
 `> set FLASK_ENV=development`  
 `> flask run`
 
 * Pour Windows Powershell:  
-`> $env:FLASK_APP="flask_grandpy"`  
+`> $env:FLASK_APP="flaskgrandpy"`  
 `> $env:FLASK_ENV="development"`  
 `> flask run`  
 

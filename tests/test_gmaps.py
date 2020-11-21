@@ -1,5 +1,5 @@
 """Test GMAPS module"""
-from flask_grandpy.api import gmaps
+from flaskgrandpy.api import gmaps
 
 
 def test_gmaps_none():

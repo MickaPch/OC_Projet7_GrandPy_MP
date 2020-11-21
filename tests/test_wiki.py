@@ -1,6 +1,6 @@
 """Test WIKIMEDIA module"""
-from flask_grandpy.api import gmaps
-from flask_grandpy.api import wiki
+from flaskgrandpy.api import gmaps
+from flaskgrandpy.api import wiki
 
 
 def test_wiki():

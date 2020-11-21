@@ -6,9 +6,9 @@ from flask import (
     jsonify
 )
 
-from flask_grandpy.parser.stopwords import parse_string
-from flask_grandpy.api.gmaps import Gmaps, MAPS_LINK
-from flask_grandpy.api.wiki import Wiki
+from flaskgrandpy.parser.stopwords import parse_string
+from flaskgrandpy.api.gmaps import Gmaps, MAPS_LINK
+from flaskgrandpy.api.wiki import Wiki
 
 
 bp = Blueprint(

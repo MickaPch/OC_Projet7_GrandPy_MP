@@ -1,5 +1,5 @@
 """WikiMedia requests"""
-from flask_grandpy.api.request import json_request
+from flaskgrandpy.api.request import json_request
 
 
 
