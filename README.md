@@ -1,3 +1,8 @@
+<!-- ![logo_grandpy](./flaskgrandpy/static/images/logo_grandpy.png =200x200) -->
+<p align="center">
+    <img src="./flaskgrandpy/static/images/logo_grandpy.png" alt="logo_grandpy" width="200"/>  
+</p>
+
 # Créez GrandPy Bot, le papy-robot
 
 
@@ -60,7 +65,10 @@ Le code source de l'application est disponible dans le repository GitHub <a name
 
 #### Procédure d'installation et de lancement de l'application en version développement :
 1. Télécharger ou cloner le repo GitHub
-2. Lancement de l'application (source <a name="P7_gflask_docithub" href="https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/" target="_blank">documentation Flask</a>):
+2. Inclure le fichier config.yaml joint aux livrables ou créer un fichier config.yaml. Le fichier devra comporter la ligne suivante (A remplacer par vôtre clé API Google.) :
+> GOOGLE_MAP_KEY: XXXXXXXXXXXXXXXXXXXXXXX
+
+3. Lancement de l'application (source <a name="P7_gflask_docithub" href="https://flask.palletsprojects.com/en/1.1.x/tutorial/factory/" target="_blank">documentation Flask</a>):
 * Pour Linux et Mac:  
 `$ export FLASK_APP=flaskgrandpy`  
 `$ export FLASK_ENV=development`  
@@ -76,6 +84,11 @@ Le code source de l'application est disponible dans le repository GitHub <a name
 `> $env:FLASK_ENV="development"`  
 `> flask run`  
 
-3. Accès à la page du site GrandPy via l'URL <a name="url_local_grandpy" href="http://127.0.0.1:5000" target="_blank">127.0.0.1:5000</a>
+4. Accès à la page du site GrandPy via l'URL <a name="url_local_grandpy" href="http://127.0.0.1:5000" target="_blank">127.0.0.1:5000</a>
+
+5. Posez une question à GrandPy et profitez de ses connaissances !
 
 
+#### Procédure de tests :  
+
+Voir le fichier <a name="readme_tests" href="./tests/README.md" target="_blank">README.md</a> relatif aux tests.
