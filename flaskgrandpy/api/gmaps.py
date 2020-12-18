@@ -18,7 +18,7 @@ class Gmaps():
     """
 
 
-    def __init__(self, place):
+    def __init__(self, place, request=None):
         """
         Object search place init.
         Return nb of found places.
@@ -27,7 +27,8 @@ class Gmaps():
         self.link_url = "https://www.google.com/maps/search/?api=1&query={}&query_place_id={}"
 
         # API REQUEST
-        request = self.get_request(place)
+        if request is None:
+            request = self.get_request(place)
 
         # NB of found places
         self.nb_places = len(request['results'])

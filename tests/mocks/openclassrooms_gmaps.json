@@ -1,0 +1,45 @@
+{
+    "html_attributions": [
+      
+    ],
+    "results": [
+      {
+        "business_status": "OPERATIONAL",
+        "formatted_address": "10 Quai de la Charente, 75019 Paris, France",
+        "geometry": {
+          "location": {
+            "lat": 48.8975156,
+            "lng": 2.3833993
+          },
+          "viewport": {
+            "northeast": {
+              "lat": 48.89886702989273,
+              "lng": 2.384756379892722
+            },
+            "southwest": {
+              "lat": 48.89616737010729,
+              "lng": 2.382056720107278
+            }
+          }
+        },
+        "icon": "https://maps.gstatic.com/mapfiles/place_api/icons/v1/png_71/generic_business-71.png",
+        "name": "OpenClassrooms",
+        "opening_hours": {
+          "open_now": true
+        },
+        "place_id": "ChIJIZX8lhRu5kcRGwYk8Ce3Vc8",
+        "plus_code": {
+          "compound_code": "V9XM+29 Paris",
+          "global_code": "8FW4V9XM+29"
+        },
+        "rating": 3.2,
+        "reference": "ChIJIZX8lhRu5kcRGwYk8Ce3Vc8",
+        "types": [
+          "point_of_interest",
+          "establishment"
+        ],
+        "user_ratings_total": 33
+      }
+    ],
+    "status": "OK"
+  }
